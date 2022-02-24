@@ -15,6 +15,14 @@ class CreatePropertiesTable extends Migration
     {
         Schema::create('properties', function (Blueprint $table) {
             $table->id();
+            $table->string("name");
+            $table->string("address");
+            $table->unsignedBigInteger('property_type_id')->nullable();
+            $table->foreign('property_type_id')
+                ->references('id')
+                ->on('property_types')
+                ->nullOnDelete();
+            $table->json("fields");
             $table->timestamps();
         });
     }

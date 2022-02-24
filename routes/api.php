@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\FallbackController;
+use App\Http\Controllers\Api\MatchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+/**
+ * ===================================================================
+ * MATCH ROUTES
+ * ===================================================================
+ */
+Route::get('match/{property}', [MatchController::class, 'getMatchingSearchProfiles'])->name('api.property.search-profiles');
+
+Route::any('{uri}', [FallbackController::class, 'missing'])->where('uri', '.*');
