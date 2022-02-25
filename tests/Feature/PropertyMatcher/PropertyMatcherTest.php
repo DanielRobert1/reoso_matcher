@@ -27,7 +27,7 @@ class PropertyMatcherTest extends TestCase
 
         $property = Property::factory([
             'property_type_id' => $propertyType->id,
-            'fields' => json_encode([
+            'fields' => [
                 "area" => "180",
                 "yearOfConstruction" => "2010",
                 "rooms" => "5",
@@ -35,18 +35,18 @@ class PropertyMatcherTest extends TestCase
                 "parking" => true,
                 "returnActual" => "12.8",
                 "price" => "1500000"
-            ]),
+            ],
         ])->create();
 
         $searchProfile = SearchProfile::factory([
             'property_type_id' => $propertyType->id,
-            "search_fields" => json_encode([
+            "search_fields" => [
                 "price" => ["0","2000000"],
                 "area" => ["200",null],
                 "yearOfConstruction" => ["2010",null],
                 "rooms" => ["4",null],
                 "returnActual" => ["15",null]
-            ]),
+            ],
         ])->create();
 
         $expectedData = [];

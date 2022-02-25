@@ -32,7 +32,7 @@ class PropertyFactory extends Factory
             'name' => $this->faker->company(),
             'address' => $this->faker->address(),
             'property_type_id' => $this->faker->numberBetween(1, PropertyType::count()),
-            'fields' => json_encode(array_slice($fields,$offset, $length, true)),
+            'fields' => array_slice($fields,$offset, $length, true),
         ];
     }
 }

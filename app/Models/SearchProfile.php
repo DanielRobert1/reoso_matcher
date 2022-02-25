@@ -10,7 +10,14 @@ class SearchProfile extends Model
 {
     use HasFactory;
 
-
+     /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'search_fields' => 'array',
+    ];
 
      /**
      * ==========================================================

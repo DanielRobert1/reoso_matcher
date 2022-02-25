@@ -61,7 +61,7 @@ class SearchProfileFactory extends Factory
         return [
             'name' => $this->faker->company(),
             'property_type_id' => $this->faker->numberBetween(1, PropertyType::count()),
-            'search_fields' =>  json_encode(array_slice($fields,$offset, $length, true)),
+            'search_fields' =>  array_slice($fields,$offset, $length, true),
         ];
     }
 }
