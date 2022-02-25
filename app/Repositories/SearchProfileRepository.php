@@ -43,6 +43,15 @@ class SearchProfileRepository extends EloquentRepository implements SearchProfil
         return $this->newQuery()->whereIn('id', $search_profile_ids)->with($with)->get();
     }
 
+     /**
+     * @param array $property_type_id
+     * @param array $with
+     * @return Collection|SearchProfile[]
+     */
+    final public function getSearchProfilesByPropertyType(int $property_type_id, array $with = []): Collection {
+        return $this->newQuery()->where('property_type_id', $property_type_id)->with($with)->get();
+    }
+
     /**
      * @param SearchProfile $search_profile
      * @param array $data

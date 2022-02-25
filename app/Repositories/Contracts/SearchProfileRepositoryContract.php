@@ -28,6 +28,13 @@ interface SearchProfileRepositoryContract
     public function getSearchProfilesByIds(array $search_profile_ids, array $with = []): Collection;
 
     /**
+     * @param array $property_type_id
+     * @param array $with
+     * @return Collection|SearchProfile[]
+     */
+    public function getSearchProfilesByPropertyType(int $property_type_id, array $with = []): Collection;
+
+    /**
      * @param SearchProfile $search_profile
      * @param array $data
      * @return bool
