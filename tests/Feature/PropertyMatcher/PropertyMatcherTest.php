@@ -21,7 +21,7 @@ class PropertyMatcherTest extends TestCase
         parent::setUp();
     }
 
-    public function test_property_matches_search_profiles(): void
+    public function test_valid_property_matches_valid_search_profiles(): void
     {
         $propertyType = PropertyType::factory()->create();
 
@@ -53,15 +53,13 @@ class PropertyMatcherTest extends TestCase
         //$expectedData[] = ["searchProfileId" => $searchProfile->id, "score" => 0, "strictMatchesCount" => 1,"looseMatchesCount" => 0];
 
         $response = $this->getJson('/api/match/'. $property->id);
-        
-
-        dd($response);
+        $response->dd();
         $response
             ->assertOk()
             ->assertJson(['status' => 'success'])
             ->assertJsonStructure([
                 'status',
-                'data' => $expectedData
+                'data',
             ]);
     }
 }

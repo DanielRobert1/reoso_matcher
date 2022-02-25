@@ -50,6 +50,8 @@ class MatchController extends Controller
                 $matchedKeys = 0;
                 $strictMatchesCount = 0;
                 $looseMatchesCount = 0;
+
+                //debug fields
                 $strictMatchesComparison = [];
                 $looseMatchesComparison = [];
                 $missedMatcheComparision = [];
@@ -143,9 +145,15 @@ class MatchController extends Controller
         $passedMax = false;
         $deviation = config("app.match_deviation");
 
-        if(is_null($value) || !is_numeric($value)){
+        
+        if(!is_numeric($value)){
             //cant match values to null
             return false;
+        }
+
+        if(is_null($value)) {
+            //null value matches anything
+            return true;
         }
 
         //convert to native type
