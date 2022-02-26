@@ -169,11 +169,7 @@ class MatchController extends Controller
         if(is_null($min)){
             $passedMin = true;
         }else {
-           
-            if($applyDeviation){
-                $min = $min - (($deviation/100) * $min);
-            }
-
+            $min = $applyDeviation ? $min - (($deviation/100) * $min) : $min;
             if(round($value, 6) >= round($min, 6)){
                 $passedMin = true;
             }
@@ -183,16 +179,10 @@ class MatchController extends Controller
         if(is_null($max)){
             $passedMax = true;
         }else {
-          
-            if($applyDeviation){
-                //apply deviation
-                $max = $max + (($deviation/100) * $max);
-            }
-
+            $max = $applyDeviation ? $max + (($deviation/100) * $max) : $max;
             if(round($value, 6) <= round($max, 6)){
                 $passedMax = true;
             }
-        
         }
 
         return ($passedMax && $passedMin);

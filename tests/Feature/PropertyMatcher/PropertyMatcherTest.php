@@ -2,14 +2,11 @@
 
 namespace Tests\Feature\PropertyMatcher;
 
-use App\Interfaces\TournamentService;
 use App\Models\Property;
 use App\Models\PropertyType;
 use App\Models\SearchProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class PropertyMatcherTest extends TestCase
@@ -21,13 +18,85 @@ class PropertyMatcherTest extends TestCase
         parent::setUp();
     }
 
-    public function test_valid_property_matches_valid_search_profiles(): void
+    public function test_invaild_property_returns_not_found(): void
+    {
+        $response = $this->getJson('/api/match/'. 1);
+        $response
+            ->assertNotFound();
+    }
+
+    public function test_valid_property_returns_empty(): void
+    {
+        $propertyType = PropertyType::factory()->create();
+
+        $property = Property::factory([
+            "property_type_id" => $propertyType->id,
+            "fields" => [
+                "area" => "180",
+                "yearOfConstruction" => "2010",
+                "rooms" => "5",
+                "heatingType" => "gas",
+                "parking" => true,
+                "returnActual" => "12.8",
+                "price" => "1500000"
+            ],
+        ])->create();
+        
+        $response = $this->getJson('/api/match/'. $property->id);
+        $response
+            ->assertOk()
+            ->assertJson(['status' => 'success'])
+            ->assertJsonStructure([
+                'status',
+                'data',
+            ])
+            ->assertJsonCount(0,'data');
+    }
+
+    public function test_valid_property_does_not_match_invalid_search_profiles(): void
     {
         $propertyType = PropertyType::factory()->create();
 
         $property = Property::factory([
             'property_type_id' => $propertyType->id,
             'fields' => [
+                "area" => "180",
+                "yearOfConstruction" => "2010",
+                "rooms" => "5",
+                "heatingType" => "gas",
+                "parking" => true,
+                "returnActual" => "12.8",
+                "price" => "1500000"
+            ],
+        ])->create();
+
+        $searchProfile = SearchProfile::factory([
+            "property_type_id" => $propertyType->id,
+            "search_fields" => [
+                "price" => [null,"200"],
+                "area" => [null,200],
+                "rooms" => ["20",null],
+            ],
+        ])->create();
+
+        $response = $this->getJson('/api/match/'. $property->id);
+        $response
+            ->assertOk()
+            ->assertJson(['status' => 'success'])
+            ->assertJsonStructure([
+                'status',
+                'data',
+            ])
+            ->assertJsonCount(0,'data');
+    }
+
+    public function test_valid_property_matches_valid_search_profiles(): void
+    {
+        $propertyType = PropertyType::factory()->create();
+
+        $property = Property::factory([
+            "property_type_id" => $propertyType->id,
+            "fields" => [
                 "area" => "180",
                 "yearOfConstruction" => "2010",
                 "rooms" => "5",
@@ -49,17 +118,27 @@ class PropertyMatcherTest extends TestCase
             ],
         ])->create();
 
-        $expectedData = [];
-        //$expectedData[] = ["searchProfileId" => $searchProfile->id, "score" => 0, "strictMatchesCount" => 1,"looseMatchesCount" => 0];
-
         $response = $this->getJson('/api/match/'. $property->id);
-        $response->dd();
+        
         $response
             ->assertOk()
             ->assertJson(['status' => 'success'])
             ->assertJsonStructure([
                 'status',
-                'data',
-            ]);
+                'data' =>[
+                    '*' => [
+                        "searchProfileId",
+                        "score",
+                        "strictMatchesCount",
+                        "looseMatchesCount",
+                    ]
+                ] 
+            ])
+            ->assertJsonCount(1,'data');
+
+        $serachProfileResult = $response['data'][0];
+
+        $this->assertEquals($searchProfile->id,$serachProfileResult['searchProfileId'],);   
     }
+    
 }
