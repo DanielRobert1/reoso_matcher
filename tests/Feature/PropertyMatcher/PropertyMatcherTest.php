@@ -102,6 +102,7 @@ class PropertyMatcherTest extends TestCase
                 "rooms" => "5",
                 "heatingType" => "gas",
                 "parking" => true,
+                "lobby" => 20,
                 "returnActual" => "12.8",
                 "price" => "1500000"
             ],
@@ -113,6 +114,7 @@ class PropertyMatcherTest extends TestCase
                 "price" => ["0","2000000"],
                 "area" => ["200",null],
                 "yearOfConstruction" => ["2010",null],
+                "lobby" => '20',
                 "rooms" => ["4",null],
                 "returnActual" => ["15",null]
             ],

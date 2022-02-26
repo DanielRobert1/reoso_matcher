@@ -126,7 +126,7 @@ class MatchController extends Controller
         }
 
         //direct type match check
-        if($searchFieldValue === $value){
+        if($this->matchDirectFields($searchFieldValue, $value)){
             $data["score"] = 10;
             $data["strictMatchesCount"] = 1;
             return $data;
@@ -135,6 +135,39 @@ class MatchController extends Controller
          //missed match
          $data["missedMatchesCount"] = 1;
          return $data;
+    }
+
+    /**
+     * Match field values
+     *
+     * @param mixed $searchFieldValue
+     * @param mixed $value
+     * @return bool
+     */
+    private function matchDirectFields($searchFieldValue, $value): bool
+    {
+            //match null values
+            if(is_null($searchFieldValue)){
+               return true;
+            }
+
+            if((is_numeric($searchFieldValue) && is_numeric($value) )){
+                $searchFieldValue = $searchFieldValue * 1;
+                $value = $value * 1;
+
+                if(abs(($searchFieldValue- $value)/$value) < 0.00001 ){
+                    return true;
+                }
+
+                return false;
+            }
+
+            //convert to native type if numeric
+            if($searchFieldValue === $value){
+               return true;
+            }
+
+            return false;
     }
 
      /**
