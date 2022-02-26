@@ -140,5 +140,78 @@ class PropertyMatcherTest extends TestCase
 
         $this->assertEquals($searchProfile->id,$serachProfileResult['searchProfileId'],);   
     }
+
+    public function test_empty_property_does_not_match_empty_search_profiles(): void
+    {
+        $propertyType = PropertyType::factory()->create();
+
+        $property = Property::factory([
+            "property_type_id" => $propertyType->id,
+            "fields" => [
+            ],
+        ])->create();
+
+        $searchProfile = SearchProfile::factory([
+            'property_type_id' => $propertyType->id,
+            "search_fields" => [
+               
+            ],
+        ])->create();
+
+        $response = $this->getJson('/api/match/'. $property->id);
+        
+        $response
+            ->assertOk()
+            ->assertJson(['status' => 'success'])
+            ->assertJsonStructure([
+                'status',
+                'data' =>[
+                    '*' => [
+                        "searchProfileId",
+                        "score",
+                        "strictMatchesCount",
+                        "looseMatchesCount",
+                    ]
+                ] 
+            ])
+            ->assertJsonCount(0,'data');  
+    }
+
+    public function test_valid_property_does_not_match_empty_search_profiles(): void
+    {
+        $propertyType = PropertyType::factory()->create();
+
+        $property = Property::factory([
+            "property_type_id" => $propertyType->id,
+            "fields" => [
+                "area" => "180",
+            ],
+        ])->create();
+
+        $searchProfile = SearchProfile::factory([
+            'property_type_id' => $propertyType->id,
+            "search_fields" => [
+               
+            ],
+        ])->create();
+
+        $response = $this->getJson('/api/match/'. $property->id);
+        
+        $response
+            ->assertOk()
+            ->assertJson(['status' => 'success'])
+            ->assertJsonStructure([
+                'status',
+                'data' =>[
+                    '*' => [
+                        "searchProfileId",
+                        "score",
+                        "strictMatchesCount",
+                        "looseMatchesCount",
+                    ]
+                ] 
+            ])
+            ->assertJsonCount(0,'data');  
+    }
     
 }
