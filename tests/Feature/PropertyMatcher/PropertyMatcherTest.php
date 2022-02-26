@@ -18,7 +18,7 @@ class PropertyMatcherTest extends TestCase
         parent::setUp();
     }
 
-    public function test_invaild_property_returns_not_found(): void
+    public function test_invalid_property_returns_not_found(): void
     {
         $response = $this->getJson('/api/match/'. 1);
         $response
