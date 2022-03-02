@@ -80,8 +80,7 @@ class MatchController extends Controller
         }
         
         //sort result 
-        $scoreColumn = array_column($result, 'score');
-        array_multisort($scoreColumn, SORT_DESC, $result);
+        usort($result, fn($i,$j) => $j['score'] <=> $i['score']);
 
         return $this->sendResponse($result, 'Property matches retrieved successfully');
     }
